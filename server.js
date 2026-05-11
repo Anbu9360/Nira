@@ -34,13 +34,18 @@ const db = mysql.createConnection({
 db.connect((err) => {
 
     if (err) {
-        console.error("Database connection failed:", err);
-    }
-    else {
-        console.log("Connected to MySQL");
+
+        console.log(
+            "MySQL not connected"
+        );
+
+    } else {
+
+        console.log(
+            "Connected to MySQL"
+        );
     }
 });
-
 // ---------------- REGISTER ----------------
 
 app.post("/register", async (req, res) => {
