@@ -31,15 +31,7 @@ const db = mysql.createConnection({
     database: "nira"
 });
 
-db.connect((err) => {
-
-    if (err) {
-        console.error("Database connection failed:", err);
-    }
-    else {
-        console.log("Connected to MySQL");
-    }
-});
+console.log("Server starting...");
 // ---------------- REGISTER ----------------
 
 app.post("/register", async (req, res) => {
