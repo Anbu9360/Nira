@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nira Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #111;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10%;
+            transition: background 0.5s ease;
+        }
+
+        /* Lamp */
+        .lamp-container {
+            position: absolute;
+            top: 0;
+            left: 18%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .wire {
+            width: 4px;
+            height: 180px;
+            background: #555;
+        }
+
+        .lamp {
+            width: 100px;
+            height: 60px;
+            background: #222;
+            border-radius: 0 0 50px 50px;
+            position: relative;
+        }
+
+        .bulb {
+            width: 30px;
+            height: 30px;
+            background: #444;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -15px;
+            left: 35px;
+            transition: all 0.4s ease;
+        }
+
+        .bulb.on {
+            background: #ffe066;
+            box-shadow:
+                0 0 20px #ffe066,
+                0 0 40px #ffe066,
+                0 0 60px #ffe066;
+        }
+
+        /* Pull String */
+        .string {
+            width: 2px;
+            height: 120px;
+            background: #999;
+            position: absolute;
+            top: 240px;
+            cursor: grab;
+        }
+
+        .string::after {
+            content: '';
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -10px;
+            left: -8px;
+        }
+
+        /* Light Effect */
+        .light {
+            position: absolute;
+            top: 240px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(
+                circle,
+                rgba(255, 224, 102, 0.35),
+                rgba(255, 224, 102, 0.05),
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .light.on {
+            opacity: 1;
+        }
+
+        /* Login Box */
+        .login-box {
+            margin-left: auto;
+            width: 350px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            transition: all 0.5s ease;
+            pointer-events: none;
+            z-index: 5;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+
+        .login-box.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+
+        .login-box h1 {
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .login-box p {
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        input::placeholder {
+            color: #bbb;
+        }
+
+        :root {
+            --glow-color: #6c63ff;
+            --glow-color-dark: #4b44c9;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.875rem;
+
+            background: linear-gradient(
+                135deg,
+                var(--glow-color),
+                var(--glow-color-dark)
+            );
+
+            border: none;
+            border-radius: 10px;
+
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+            margin-top: 0.8rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        #message {
+            margin-top: 15px;
+            color: #ff8b8b;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 30px;
+            color: #aaa;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Lamp -->
+    <div class="lamp-container">
+        <div class="wire"></div>
+        <div class="lamp">
+            <div class="bulb" id="bulb"></div>
+        </div>
+
+        <div class="string" id="string"></div>
+    </div>
+
+    <!-- Light -->
+    <div class="light" id="light"></div>
+
+    <!-- Login Form (Right Side) -->
+    <div class="login-box" id="loginBox">
+
+        <h1>Nira</h1>
+        <p>Pull the string to begin</p>
+
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+
+        <button class="login-btn" onclick="login()">
+            Login
+        </button>
+
+        <button class="login-btn" onclick="register()">
+            Register
+        </button>
+
+        <p id="message"></p>
+
+    </div>
+
+    <div class="hint">
+        Pull the lamp string
+    </div>
+
+<script>
+
+let isOpen = false;
+
+const string = document.getElementById("string");
+const bulb = document.getElementById("bulb");
+const light = document.getElementById("light");
+const loginBox = document.getElementById("loginBox");
+
+// Pull Animation
+string.addEventListener("click", () => {
+
+    string.style.transform = "translateY(30px)";
+
+    setTimeout(() => {
+        string.style.transform = "translateY(0px)";
+    }, 200);
+
+    isOpen = !isOpen;
+
+    if (isOpen) {
+        bulb.classList.add("on");
+        light.classList.add("on");
+        loginBox.classList.add("show");
+        document.body.style.background = "#181818";
+    }
+    else {
+        bulb.classList.remove("on");
+        light.classList.remove("on");
+        loginBox.classList.remove("show");
+        document.body.style.background = "#111";
+    }
+});
+
+// Register
+async function register() {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch("/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("message").innerText = data.message;
+}
+
+// Login
+async function login() {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch("/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("message").innerText = data.message;
+
+    if (data.message === "Login successful") {
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 1000);
+    }
+}
+
+</script>
+
+</body>
+</html>

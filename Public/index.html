@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nira</title>
+
+    <link rel="icon" href="/favicon.ico">
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f5f5f5;
+        }
+        .container {
+            margin-top: 80px;
+            background: white;
+            padding: 30px;
+            width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Nira</h1>
+       
+        <a href="/login">
+    <button>Login / Register</button>
+</a>
+
+        <h2>Create Job</h2>
+        <input type="text" id="title" placeholder="Job Title">
+        <input type="number" id="slots" placeholder="Number of Slots">
+
+        <button onclick="createJob()">
+    Create Job
+</button>
+
+<br><br>
+
+<a href="/dashboard">
+    <button>
+        Dashboard
+    </button>
+</a>
+
+        <p id="message"></p>
+        <p id="link"></p>
+    </div>
+
+<script>
+async function createJob() {
+    const title = document.getElementById("title").value;
+    const slots = document.getElementById("slots").value;
+
+    const res = await fetch("/create-job", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ title, slots })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("message").innerText = data.message;
+
+    if (data.link) {
+        document.getElementById("link").innerHTML =
+            `<a href="${data.link}" target="_blank">${data.link}</a>`;
+    }
+}
+</script>
+
+</body>
+</html>

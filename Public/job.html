@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nira - Job</title>
+
+    <link rel="icon" href="/favicon.ico">
+    
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f5f5f5;
+        }
+        .container {
+            margin-top: 80px;
+            background: white;
+            padding: 30px;
+            width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="jobTitle">Loading...</h2>
+    <p id="slots"></p>
+
+    <h3>Apply</h3>
+    <input type="text" id="name" placeholder="Your Name">
+    <input type="text" id="phone" placeholder="Phone Number">
+
+    <button onclick="apply()">Apply</button>
+
+    <p id="message"></p>
+</div>
+
+<script>
+const jobId = window.location.pathname.split("/").pop();
+
+// Load job data
+async function loadJob() {
+    const res = await fetch(`/job-data/${jobId}`);
+    const data = await res.json();
+
+    if (data.message) {
+        document.body.innerHTML = `<h2>${data.message}</h2>`;
+        return;
+    }
+
+    document.getElementById("jobTitle").innerText = data.title;
+    document.getElementById("slots").innerText =
+        `Remaining Slots: ${data.slots_remaining}`;
+}
+
+// Apply function
+async function apply() {
+    const name = document.getElementById("name").value;
+    const phone = document.getElementById("phone").value;
+
+    const res = await fetch("/apply", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            jobId,
+            name,
+            phone
+        })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("message").innerText = data.message;
+
+    loadJob(); // refresh slots
+}
+
+loadJob();
+</script>
+<div style="width: 100%; background: #ddd; height: 20px; border-radius: 10px;">
+    <div id="progressBar" 
+         style="height: 100%; width: 0%; background: green; border-radius: 10px;">
+    </div>
+</div>
+</body>
+</html>
