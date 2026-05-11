@@ -34,16 +34,10 @@ const db = mysql.createConnection({
 db.connect((err) => {
 
     if (err) {
-
-        console.log(
-            "MySQL not connected"
-        );
-
-    } else {
-
-        console.log(
-            "Connected to MySQL"
-        );
+        console.error("Database connection failed:", err);
+    }
+    else {
+        console.log("Connected to MySQL");
     }
 });
 // ---------------- REGISTER ----------------
@@ -571,7 +565,10 @@ app.get("/dashboard", (req, res) => {
 });
 
 // ---------------- SERVER ----------------
+app.get("/", (req, res) => {
 
+    res.sendFile(__dirname + "/public/index.html");
+});
 app.listen(PORT, "0.0.0.0", () => {
 
     console.log(
