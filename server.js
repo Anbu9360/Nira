@@ -8,6 +8,10 @@ const mysql = require("mysql2");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.get("/", (req, res) => {
+
+    res.sendFile(__dirname + "/public/index.html");
+});
 // ---------------- MIDDLEWARE ----------------
 
 app.use(cors());
