@@ -1,21 +1,30 @@
 {
   "name": "nira",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Slot-based hiring platform",
+  "main": "server.js",
+
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
+
+  "keywords": [
+    "nodejs",
+    "express",
+    "mysql",
+    "hiring",
+    "jobs"
+  ],
+
+  "author": "Anbu",
   "license": "ISC",
-  "type": "commonjs",
+
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "body-parser": "^2.2.2",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "mysql2": "^3.22.3"
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mysql2": "^3.11.0"
   }
 }
