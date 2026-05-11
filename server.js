@@ -28,12 +28,7 @@ app.use(session({
 
 // ---------------- DATABASE ----------------
 
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "0412",
-    database: "nira"
-});
+// MySQL temporarily disabled
 
 console.log("Server starting...");
 // ---------------- REGISTER ----------------
